@@ -1,19 +1,19 @@
-# react-hook-gyroscope
+# react-hook-absolute-orientation
 
-A React hook to access data from the [Gyroscope API](https://developer.mozilla.org/en-US/docs/Web/API/Gyroscope).
+A React hook to access data from the [Absolute Orientation Sensor API](https://developer.mozilla.org/en-US/docs/Web/API/AbsoluteOrientationSensor).
 
 ## Installation
 
 Using `npm`:
 
 ```sh
-npm install --save react-hook-gyroscope
+npm install --save react-hook-absolute-orientation
 ```
 
 Using `yarn`:
 
 ```sh
-yarn add react-hook-gyroscope
+yarn add react-hook-absolute-orientation
 ```
 
 ## Usage
@@ -22,30 +22,47 @@ yarn add react-hook-gyroscope
 import React from 'react'
 import useGyroscope from 'react-hook-gyroscope'
 
-const ComponentWithGyroscope = () => {
-  const gyroscope = useGyroscope()
+const onUpdate = info => {
+  console.log('NEW INFO: ', info)
+}
 
-  return !gyroscope.error ? (
-    <ul>
-      <li>X: {gyroscope.x}</li>
-      <li>Y: {gyroscope.y}</li>
-      <li>Z: {gyroscope.z}</li>
-    </ul>
-  ) : (
-    <p>No gyroscope, sorry.</p>
+const ComponentWithGyroscope = () => {
+  const quaternion = useAbsoluteOrientationSensor(
+    { frequency: 3, referenceFrame: 'device' },
+    onUpdate // named function reference is required
+  )
+
+  return (
+    <div>
+      <div>Absolute Orientation Sensor Hook Demo</div>
+      <pre>{JSON.stringify(quaternion, null, 2)}</pre>
+      <div>
+        Rounded to 0.01
+        {quaternion.map((item, index) => {
+          return <div key={index}>{Math.round(100 * item) / 100}</div>
+        })}
+      </div>
+      <div>
+        Rounded to 0.1
+        {quaternion.map((item, index) => {
+          return <div key={index}>{Math.round(10 * item) / 10}</div>
+        })}
+      </div>
+    </div>
   )
 }
 ```
 
 ### Using `SensorOptions`
 
-https://w3c.github.io/gyroscope/#gyroscope-interface
+https://w3c.github.io/orientation-sensor/#absoluteorientationsensor-interface
 
 If you want to use this feature, simply provide `useGyroscope` with a `SensorOptions` object:
 
 ```jsx
-const gyroscope = useGyroscope({
-  frequency: 60, // cycles per second
+const sensor = useAbsoluteOrientationSensor({
+  frequency: 10, // cycles per second
+  referenceFrame: 'device', // or 'screen'
 })
 ```
 
@@ -56,22 +73,16 @@ You can supply a second parameter to `useGyroscope` which will be called every t
 If you don't use `SensorOptions`, supply `{}` as your first argument.
 
 ```jsx
-const onGyroscopeUpdate = (gyroscope) => {
-  console.log('Here’s some new data from the Gyroscope API: ', gyroscope)
+const onUpdate = data => {
+  console.log('Here’s some new data from the API: ', data)
 }
 
-const gyroscope = useGyroscope({}, onGyroscopeUpdate)
+const sensor = useAbsoluteOrientationSensor({}, onUpdate)
 ```
-
-## Notes
-
-Access to data from the Gyroscope API needs user permission.
-
-If permission to access gyroscope was previously granted by the user, gyroscope data will be available. If permission to access was not granted previously, the user will be prompted to give permission when the component mounts.
 
 ## Caveats
 
-Gyroscope API is available only in secure contexts (a.k.a. only using HTTPS).
+Absolute Orientation Sensor API is available only in secure contexts (a.k.a. only using HTTPS).
 
 ## Credits
 
