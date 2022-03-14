@@ -10,7 +10,7 @@
     "sensor"
   ],
   "repository": "git@github.com:masaok/react-hook-absolute-orientation.git",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "LGPL",
   "author": "Masao Kitamura",
   "scripts": {

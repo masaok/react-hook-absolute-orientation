@@ -20,7 +20,7 @@ yarn add react-hook-absolute-orientation
 
 ```jsx
 import React from 'react'
-import useGyroscope from 'react-hook-gyroscope'
+import useAbsoluteOrientationSensor from 'react-hook-absolute-orientation'
 
 const onUpdate = info => {
   console.log('NEW INFO: ', info)
